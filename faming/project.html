@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Origin' content='*'><meta http-equiv='Access-Control-Allow-Credentials' content='true'><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script><link rel='stylesheet' href='https://fustyles.github.io/webduino/SpBlocklyJS/css/icon_custom.css' /><script src='https://fustyles.github.io/webduino/SpBlocklyJS/holistic_20201012/holistic_video.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/holistic_20201012/holistic.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/WebSerial_20220126/WebSerial_elements.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/WebSerial_20220126/WebSerial.js'></script></head><body>
+<script>
+const delay = (seconds) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+const main = async () => {
+    var _E5_A4_BE_E8_A7_92, _E6_AC_A1_E6_95_B8, my_123;
+
+
+    webserial_button("gamebutton_webserial_open", "block");
+    webserial_button_position("gamebutton_webserial_open", 0, 590);
+    webserial_baudrate(115200);
+    holistic_video("block", "1", "1", "1", "1", "1", "1");
+    holistic_startvideo_media(1080, 1080, "front", 0);
+    _E5_A4_BE_E8_A7_92 = Math.round(holistic_angle_3points((holistic_pose_position("23", "x")), (holistic_pose_position("23", "y")), (holistic_pose_position("25", "x")), (holistic_pose_position("25", "y")), (holistic_pose_position("29", "x")), (holistic_pose_position("29", "y"))));
+    _E6_AC_A1_E6_95_B8 = 0;
+    _E5_A4_BE_E8_A7_92 = 0;
+    holistic_recognitionFinish = async function() {
+        holistic_state(0);
+        _E5_A4_BE_E8_A7_92 = Math.round(holistic_angle_3points((holistic_pose_position("23", "x")), (holistic_pose_position("23", "y")), (holistic_pose_position("25", "x")), (holistic_pose_position("25", "y")), (holistic_pose_position("29", "x")), (holistic_pose_position("29", "y"))));
+        span_create('', 1100, 530, 50, _E5_A4_BE_E8_A7_92, 999);
+        if (_E5_A4_BE_E8_A7_92 > 160 && _E5_A4_BE_E8_A7_92 < 200) {
+            webserial_sendText('1');
+            if (my_123 == 1) {
+                _E6_AC_A1_E6_95_B8 = _E6_AC_A1_E6_95_B8 + 1;
+                my_123 = 0;
+            }
+        } else if (_E5_A4_BE_E8_A7_92 > 70 && _E5_A4_BE_E8_A7_92 < 110) {
+            webserial_sendText('2');
+            if (my_123 == 0) {
+                my_123 = 1;
+            }
+        } else {
+            webserial_sendText('0');
+        }
+
+        holistic_state(1);
+    };
+};
+main();
+</script>
+</body></html>
