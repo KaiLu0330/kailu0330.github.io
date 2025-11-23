@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Python Editor (Full UI)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vscode-codicons/0.0.17/codicons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="title-bar">
+        <div class="menubar-item" id="menu-file">
+            <span>File</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="triggerAction('new-file')">New File</div>
+                <div class="menu-option" onclick="triggerAction('import')">Open File...</div>
+                <div class="separator"></div>
+                <div class="menu-option" onclick="triggerAction('save')">Save (Export)</div>
+            </div>
+        </div>
+        <div class="menubar-item">
+            <span>Edit</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="triggerAction('undo')">Undo <span class="shortcut">Ctrl+Z</span></div>
+                <div class="menu-option" onclick="triggerAction('redo')">Redo <span class="shortcut">Ctrl+Y</span></div>
+            </div>
+        </div>
+        <div class="menubar-item">
+            <span>Selection</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="triggerAction('select-all')">Select All <span class="shortcut">Ctrl+A</span></div>
+            </div>
+        </div>
+        <div class="menubar-item">
+            <span>View</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="triggerAction('toggle-sidebar')">Toggle Sidebar</div>
+                <div class="menu-option" onclick="triggerAction('toggle-minimap')">Toggle Minimap</div>
+                <div class="menu-option" onclick="triggerAction('toggle-wordwrap')">Toggle Word Wrap</div>
+            </div>
+        </div>
+        <div class="menubar-item">
+            <span>Run</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="triggerAction('run')">Run Code <span class="shortcut">F5</span></div>
+            </div>
+        </div>
+        <div class="menubar-item">
+            <span>Help</span>
+            <div class="dropdown-menu">
+                <div class="menu-option" onclick="alert('Web Python Editor v1.0\nCreated with Monaco & Pyodide')">About</div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="file-input" accept=".py,.txt,.md,.json" style="display: none;" multiple />
+
+    <div class="container">
+        <div class="activity-bar">
+            <div class="icon active" id="toggle-sidebar-btn" title="Explorer">
+                <i class="codicon codicon-files"></i>
+            </div>
+            <div class="icon"><i class="codicon codicon-search"></i></div>
+            <div class="icon"><i class="codicon codicon-source-control"></i></div>
+            <div class="spacer"></div>
+            <div class="icon" id="btn-settings" title="Settings">
+                <i class="codicon codicon-settings-gear"></i>
+            </div>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-title">
+                <span>EXPLORER</span>
+                <div class="sidebar-actions">
+                    <i class="codicon codicon-new-file action-icon" id="btn-new-file" title="New File"></i>
+                    <i class="codicon codicon-edit action-icon" id="btn-rename-file" title="Rename File"></i>
+                    <i class="codicon codicon-trash action-icon" id="btn-delete-file" title="Delete File"></i>
+                    <span class="divider">|</span>
+                    <i class="codicon codicon-cloud-upload action-icon" id="btn-import" title="Import"></i>
+                    <i class="codicon codicon-cloud-download action-icon" id="btn-export" title="Export Current"></i>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <div class="folder">
+                    <i class="codicon codicon-chevron-down"></i> 📁 WORKSPACE
+                </div>
+                <div id="file-list"></div>
+            </div>
+        </div>
+
+        <div class="main-area">
+            <div class="tabs" id="tabs-container"></div>
+            <div id="editor-container"></div>
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <span class="active-term">TERMINAL</span>
+                    <span>OUTPUT</span>
+                    <div class="term-controls">
+                        <button id="restart-btn" title="Restart"><i class="codicon codicon-debug-restart"></i></button>
+                        <button id="clear-btn" title="Clear"><i class="codicon codicon-trash"></i></button>
+                        <button id="run-btn" class="run-btn-green" title="Run"><i class="codicon codicon-play"></i></button>
+                    </div>
+                </div>
+                <div id="terminal-output">初始化 Python 環境中...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-left">
+            <div class="status-item"><i class="codicon codicon-source-control"></i> master*</div>
+            <div class="status-item" id="cursor-position">Ln 1, Col 1</div>
+        </div>
+        <div class="status-right">
+            <div class="status-item" id="font-control">
+                <span id="font-size-display">14px</span>
+            </div>
+            <div class="status-item">Python 3.11</div>
+            <div class="status-item"><i class="codicon codicon-bell"></i></div>
+        </div>
+    </div>
+
+    <div id="settings-overlay" class="hidden">
+        <div class="settings-window">
+            <div class="settings-header">
+                <span>Settings</span>
+                <i class="codicon codicon-close" id="close-settings"></i>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <label>Font Size</label>
+                    <input type="number" id="setting-font-size" value="14" min="8" max="40">
+                </div>
+                <div class="setting-item">
+                    <label>Word Wrap</label>
+                    <input type="checkbox" id="setting-word-wrap">
+                </div>
+                <div class="setting-item">
+                    <label>Minimap</label>
+                    <input type="checkbox" id="setting-minimap" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Line Numbers</label>
+                    <input type="checkbox" id="setting-line-numbers" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Theme (Simulated)</label>
+                    <select id="setting-theme" disabled title="Only Dark Theme available currently">
+                        <option>Dark+</option>
+                        <option>Light+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs/loader.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

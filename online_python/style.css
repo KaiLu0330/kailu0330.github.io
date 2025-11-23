@@ -1,0 +1,177 @@
+/* Global Reset & Layout */
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e; color: #cccccc;
+    height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+}
+
+/* --- 1. Top Menu Bar (New) --- */
+.title-bar {
+    height: 30px;
+    background-color: #333333; /* Slightly lighter than editor */
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 13px;
+    z-index: 50;
+    border-bottom: 1px solid #252526;
+}
+
+.menubar-item {
+    padding: 4px 8px;
+    cursor: pointer;
+    position: relative; /* For dropdown positioning */
+    border-radius: 4px;
+}
+
+.menubar-item:hover {
+    background-color: #505050;
+    color: white;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #252526;
+    border: 1px solid #454545;
+    min-width: 200px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 100;
+    padding: 4px 0;
+    border-radius: 4px;
+}
+
+/* Show dropdown on hover (Desktop style) */
+.menubar-item:hover .dropdown-menu {
+    display: block;
+}
+
+.menu-option {
+    padding: 6px 20px;
+    color: #cccccc;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu-option:hover {
+    background-color: #094771; /* VS Code highlight blue */
+    color: white;
+}
+
+.menu-option .shortcut {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-left: 15px;
+}
+
+.separator {
+    height: 1px;
+    background-color: #454545;
+    margin: 4px 10px;
+}
+
+/* --- Layout Container --- */
+.container { display: flex; flex: 1; width: 100vw; overflow: hidden; }
+
+/* Activity Bar */
+.activity-bar { width: 48px; background-color: #333333; display: flex; flex-direction: column; align-items: center; padding-top: 10px; z-index: 10; }
+.activity-bar .icon { width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; cursor: pointer; opacity: 0.6; }
+.activity-bar .icon .codicon { font-size: 24px; }
+.activity-bar .icon:hover, .activity-bar .icon.active { opacity: 1; color: white; }
+.activity-bar .icon.active { border-left: 2px solid #ffffff; }
+.spacer { flex: 1; }
+
+/* Sidebar */
+.sidebar { width: 220px; background-color: #252526; font-size: 13px; display: flex; flex-direction: column; transition: width 0.1s; }
+.sidebar.hidden { width: 0; overflow: hidden; }
+.sidebar-title { padding: 10px 20px; font-size: 11px; font-weight: bold; color: #bbbbbb; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-actions { display: flex; }
+.action-icon { cursor: pointer; margin-left: 6px; font-size: 14px; }
+.action-icon:hover { color: white; }
+.divider { color: #444; margin: 0 5px; font-size: 10px; }
+.folder { padding: 4px 15px; font-weight: bold; display: flex; align-items: center; gap: 5px; color: #cccccc; }
+#file-list { display: flex; flex-direction: column; }
+.file-item { padding: 4px 20px 4px 25px; cursor: pointer; display: flex; align-items: center; color: #cccccc; gap: 6px; }
+.file-item:hover { background-color: #2a2d2e; }
+.file-item.active { background-color: #37373d; color: #ffffff; }
+.file-icon { width: 16px; height: 16px; }
+
+/* Main Area */
+.main-area { flex: 1; display: flex; flex-direction: column; background-color: #1e1e1e; min-width: 0; }
+.tabs { height: 35px; background-color: #252526; display: flex; align-items: center; overflow-x: auto; }
+.tabs::-webkit-scrollbar { height: 3px; }
+.tabs::-webkit-scrollbar-thumb { background: #444; }
+.tab { height: 100%; padding: 0 10px; min-width: 120px; max-width: 200px; display: flex; align-items: center; gap: 6px; background-color: #2d2d2d; border-right: 1px solid #252526; font-size: 13px; cursor: pointer; color: #969696; }
+.tab.active { background-color: #1e1e1e; border-top: 1px solid #007acc; color: #ffffff; }
+.tab-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.close-tab { font-size: 14px !important; padding: 2px; visibility: hidden; }
+.tab:hover .close-tab, .tab.active .close-tab { visibility: visible; }
+.close-tab:hover { background-color: #444; color: white; }
+#editor-container { flex: 1; width: 100%; }
+
+/* Terminal */
+.terminal-container { height: 30%; background-color: #1e1e1e; border-top: 1px solid #3e3e42; display: flex; flex-direction: column; }
+.terminal-header { height: 35px; padding: 0 15px; display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: bold; background-color: #1e1e1e; }
+.term-controls { margin-left: auto; display: flex; gap: 6px; }
+.term-controls button { background: transparent; border: none; cursor: pointer; color: #cccccc; padding: 3px; }
+.term-controls button:hover { background-color: #333; }
+.run-btn-green { color: #42b983 !important; }
+#terminal-output { flex: 1; padding: 10px; font-family: 'Consolas', monospace; font-size: 14px; overflow-y: auto; white-space: pre-wrap; color: #d4d4d4; border-top: 1px solid #2d2d2d; user-select: text; }
+
+/* Status Bar */
+.status-bar { height: 22px; background-color: #007acc; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-size: 12px; z-index: 20; }
+.status-left, .status-right { display: flex; gap: 15px; }
+.status-item { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+/* --- 2. Settings Modal (New) --- */
+.hidden { display: none !important; }
+
+#settings-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.settings-window {
+    width: 500px;
+    background-color: #252526;
+    border: 1px solid #454545;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    color: #cccccc;
+    display: flex; flex-direction: column;
+}
+
+.settings-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #333;
+    font-weight: bold;
+    display: flex; justify-content: space-between; align-items: center;
+    background-color: #1e1e1e;
+}
+
+.settings-header i { cursor: pointer; }
+.settings-header i:hover { color: white; }
+
+.settings-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+.setting-item {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+.setting-item label { font-size: 14px; }
+
+.setting-item input[type="number"] {
+    background-color: #3c3c3c; border: 1px solid #3c3c3c; color: #cccccc; padding: 4px; width: 60px;
+}
+
+.setting-item select {
+    background-color: #3c3c3c; border: 1px solid #3c3c3c; color: #cccccc; padding: 4px;
+}
