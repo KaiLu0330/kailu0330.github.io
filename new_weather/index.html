@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>天氣</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+    
+    <div class="container">
+        <header>
+            <h2 id="city-name"><i class="bi bi-geo-alt-fill"></i> 定位中...</h2>
+            <h1 id="current-temp">--</h1>
+            <div class="weather-summary" id="weather-desc">載入中...</div>
+            <div class="high-low">
+                <span id="max-temp">H:--°</span>
+                <span id="min-temp">L:--°</span>
+            </div>
+        </header>
+
+        <section class="glass-panel hourly-section">
+            <div class="section-header"><i class="bi bi-clock"></i> 24 小時預報</div>
+            <div class="hourly-container" id="hourly-list"></div>
+        </section>
+
+        <section class="glass-panel daily-section">
+            <div class="section-header"><i class="bi bi-calendar-week"></i> 10 天預報</div>
+            <div class="daily-list" id="daily-list"></div>
+        </section>
+
+        <div class="details-grid">
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-thermometer-half"></i> 體感溫度</div>
+                <div class="card-value" id="detail-feels-like">--°</div>
+                <div class="card-sub">實際溫度 <span id="detail-actual-temp">--°</span></div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-sun"></i> 紫外線指數</div>
+                <div class="card-value" id="detail-uv">0</div>
+                <div class="card-sub" id="detail-uv-text">低量級</div>
+                <div class="uv-bar-bg"><div class="uv-bar-fill" id="uv-bar"></div></div>
+            </div>
+
+            <div class="glass-panel detail-card wide-card wind-card">
+                <div class="card-title"><i class="bi bi-wind"></i> 風</div>
+                <div class="wind-layout">
+                    <div class="wind-info">
+                        <div class="wind-row">
+                            <span>風力</span>
+                            <span class="wind-val" id="wind-speed">--</span>
+                        </div>
+                        <div class="wind-row">
+                            <span>陣風</span>
+                            <span class="wind-val" id="wind-gusts">--</span>
+                        </div>
+                        <div class="wind-row">
+                            <span>風向</span>
+                            <span class="wind-val" id="wind-dir-text">--</span>
+                        </div>
+                    </div>
+                    <div class="compass-container">
+                        <div class="compass-bg">
+                            <span>北</span><span>東</span><span>南</span><span>西</span>
+                        </div>
+                        <div class="compass-arrow" id="compass-arrow">
+                            <i class="bi bi-arrow-up-circle-fill"></i>
+                        </div>
+                        <div class="compass-center-text" id="wind-beaufort">--級</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-sunrise"></i> 日出日落</div>
+                <div class="card-value" id="sunrise-time">--:--</div>
+                <div class="sun-graph-container">
+                    <svg viewBox="0 0 100 40" class="sun-curve">
+                        <path d="M0,40 Q50,5 100,40" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                        <circle cx="0" cy="40" r="4" fill="#ffd700" id="sun-position"/>
+                    </svg>
+                </div>
+                <div class="card-sub">日落: <span id="sunset-time">--:--</span></div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-droplet-half"></i> 降水量</div>
+                <div class="card-value" id="precip-val">0 mm</div>
+                <div class="card-sub">過去 24 小時</div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-eye"></i> 能見度</div>
+                <div class="card-value" id="visibility-val">-- km</div>
+                <div class="card-sub">能見度狀況良好</div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-moisture"></i> 濕度</div>
+                <div class="card-value" id="humidity-val">--%</div>
+                <div class="card-sub" id="dew-point">露點 --°</div>
+            </div>
+
+            <div class="glass-panel detail-card">
+                <div class="card-title"><i class="bi bi-speedometer2"></i> 氣壓</div>
+                <div class="gauge-container">
+                    <div class="gauge-bg"></div>
+                    <div class="gauge-value" id="pressure-val">--</div>
+                    <div class="gauge-unit">百帕</div>
+                    <div class="gauge-needle" id="pressure-needle"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>資料來源: Open-Meteo | Design inspired by iOS Weather</footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
