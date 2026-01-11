@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Clone Ultimate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-loading">
+    <div class="app-container">
+        <header class="main-header">
+            <h2 class="location">定位中...</h2>
+            <h1 class="temp">--°</h1>
+            <p class="condition">載入中</p>
+            <div class="high-low">
+                <span>最高: <span id="max-temp">--</span>°</span>
+                <span>最低: <span id="min-temp">--</span>°</span>
+            </div>
+        </header>
+
+        <section class="panel hourly-panel">
+            <h3>每小時預報</h3>
+            <div class="hourly-container" id="hourly-container"></div>
+        </section>
+
+        <section class="panel daily-panel">
+            <h3>未來 7 天預報</h3>
+            <div class="daily-container" id="daily-container"></div>
+        </section>
+
+        <section class="details-grid">
+    <div class="panel detail-box">
+        <div class="detail-title">🌡️ 體感溫度</div>
+        <div class="detail-value" id="feels-like">--°</div>
+        <div class="detail-desc">實際感受</div>
+    </div>
+
+    <div class="panel detail-box">
+        <div class="detail-title">☀️ 紫外線指數</div>
+        <div class="detail-value" id="uv-index">--</div>
+        <div class="detail-desc" id="uv-desc">--</div>
+    </div>
+
+    <div class="panel detail-box col-span-2">
+        <div class="detail-title">🌬️ 風向與風速</div>
+        <div class="wind-layout">
+            <div class="wind-info">
+                <div class="detail-value"><span id="wind-speed">--</span> <span class="unit">km/h</span></div>
+                <div class="detail-desc" id="wind-dir">--</div>
+            </div>
+            <div class="compass">
+                <div class="arrow" id="wind-arrow">➤</div>
+                <div class="direction-label">N</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel detail-box">
+        <div class="detail-title">🌅 日出</div>
+        <div class="detail-value" id="sunrise-time">--:--</div>
+        <div class="detail-desc">日落: <span id="sunset-preview">--:--</span></div>
+    </div>
+
+    <div class="panel detail-box">
+        <div class="detail-title">🌇 日落</div>
+        <div class="detail-value" id="sunset-time">--:--</div>
+        <div class="detail-desc">日出: <span id="sunrise-preview">--:--</span></div>
+    </div>
+
+    <div class="panel detail-box">
+        <div class="detail-title">💧 降水量</div>
+        <div class="detail-value"><span id="precip">0</span> <span class="unit">mm</span></div>
+        <div class="detail-desc">過去24小時</div>
+    </div>
+
+    <div class="panel detail-box">
+        <div class="detail-title">👁️ 能見度</div>
+        <div class="detail-value"><span id="visibility">--</span> <span class="unit">km</span></div>
+        <div class="detail-desc" id="vis-desc">--</div>
+    </div>
+
+    <div class="panel detail-box col-span-2">
+        <div class="detail-title">🌙 月相</div>
+        <div class="moon-layout">
+            <div class="moon-text">
+                <div class="detail-value" id="moon-phase">--</div>
+                <div class="detail-desc">照度 <span id="moon-illumination">--%</span></div>
+            </div>
+            <div class="moon-icon" id="moon-icon">🌑</div>
+        </div>
+    </div>
+</section>
+        
+        <footer class="attribution">
+            Data by <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

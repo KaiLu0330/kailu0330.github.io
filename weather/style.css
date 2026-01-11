@@ -1,0 +1,310 @@
+/* =========================================
+   1. 全域變數與重置 (Variables & Reset)
+   ========================================= */
+:root {
+    --text-color: #ffffff;
+    --panel-bg: rgba(0, 0, 0, 0.2);       /* 卡片背景：深色半透明 */
+    --panel-border: rgba(255, 255, 255, 0.15); /* 卡片邊框 */
+    --bar-bg: rgba(0, 0, 0, 0.3);         /* 溫度條底槽 */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* 禁止在手機上選取文字，讓體驗更像 App */
+    user-select: none; 
+    -webkit-user-select: none;
+}
+
+/* =========================================
+   2. 動態背景動畫 (Background Animation)
+   ========================================= */
+@keyframes gradient-move {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center; /* 讓 App 居中顯示 */
+    
+    /* 防止捲動回彈效果 (iOS style) */
+    overscroll-behavior: none;
+    
+    /* 背景設定 */
+    background-size: 300% 300%;
+    transition: background-image 1s ease;
+    animation: gradient-move 20s ease infinite;
+}
+
+/* 主題配色 (由 JS 切換) */
+.theme-loading { background-image: linear-gradient(-45deg, #333, #555); }
+.theme-sunny   { background-image: linear-gradient(-45deg, #2980B9, #6DD5FA, #2980B9); }
+.theme-cloudy  { background-image: linear-gradient(-45deg, #4B79A1, #283E51, #4B79A1); }
+.theme-rain    { background-image: linear-gradient(-45deg, #203A43, #2C5364, #203A43); }
+.theme-night   { background-image: linear-gradient(-45deg, #0f2027, #203a43, #2c5364); }
+
+/* =========================================
+   3. App 容器與通用佈局 (Layout)
+   ========================================= */
+.app-container {
+    width: 100%;
+    max-width: 480px; /* 模擬手機寬度 */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 卡片之間的間距 */
+    padding-bottom: 40px; /* 底部留白 */
+}
+
+/* 通用玻璃擬態卡片 (Glassmorphism Panel) */
+.panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+/* 卡片內的小標題 (e.g., 每小時預報, 體感溫度) */
+.panel h3, .detail-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 僅針對 .panel h3 增加分隔線 (如每小時/每日預報) */
+.panel h3 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   4. 頭部資訊 (Header Info)
+   ========================================= */
+.main-header {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.location {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.temp {
+    font-size: 6.5rem;
+    font-weight: 600; /* Apple 風格粗體 */
+    margin: -10px 0;
+    letter-spacing: -3px;
+}
+
+.condition {
+    font-size: 1.6rem;
+    font-weight: 600;
+    opacity: 0.95;
+}
+
+.high-low {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* =========================================
+   5. 每小時預報 (Hourly Scroll)
+   ========================================= */
+.hourly-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 25px;
+    padding: 5px 0 10px 0;
+    /* 隱藏捲軸 */
+    scrollbar-width: none;
+}
+.hourly-container::-webkit-scrollbar { display: none; }
+
+.hourly-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+    gap: 12px;
+}
+
+.hourly-time { font-size: 1rem; font-weight: 700; }
+.hourly-icon { font-size: 1.8rem; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+.hourly-temp { font-size: 1.3rem; font-weight: 700; }
+
+/* =========================================
+   6. 每日預報 (Daily List & Temp Bar)
+   ========================================= */
+.daily-panel { padding: 20px; }
+
+.daily-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* 用 padding 控制間距 */
+}
+
+.daily-row {
+    display: grid;
+    /* 定義欄位寬度: 星期 | 圖示 | 低溫 | 溫度條 | 高溫 */
+    grid-template-columns: 50px 40px 40px 1fr 40px; 
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.daily-row:last-child { border-bottom: none; }
+
+.day-name { font-weight: 700; }
+.day-icon { text-align: center; font-size: 1.4rem; }
+.min-temp { opacity: 0.6; text-align: right; }
+.max-temp { text-align: right; font-weight: 700; }
+
+/* 溫度條容器 */
+.temp-bar-container {
+    height: 6px;
+    background: var(--bar-bg);
+    border-radius: 10px;
+    position: relative;
+    width: 100%;
+    margin: 0 5px;
+}
+
+/* 彩色漸層條 */
+.temp-bar-fill {
+    position: absolute;
+    height: 100%;
+    border-radius: 10px;
+    top: 0;
+    background: linear-gradient(90deg, #54d2f3, #fabc3c); 
+    opacity: 0.9;
+    min-width: 6px;
+}
+
+/* 當前溫度小白點 */
+.current-temp-dot {
+    width: 14px;
+    height: 14px;
+    background-color: #ffffff;
+    border: 3px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    z-index: 5;
+}
+
+/* =========================================
+   7. 詳細資訊網格 (Details Grid)
+   ========================================= */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 兩欄 */
+    gap: 15px;
+}
+
+/* 單格卡片樣式 (1x1) */
+.detail-box {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* 預設正方形 */
+    aspect-ratio: 1 / 1; 
+}
+
+.detail-value { font-size: 2.2rem; font-weight: 600; }
+.detail-desc { font-size: 0.9rem; font-weight: 500; opacity: 0.7; }
+.unit { font-size: 1.1rem; opacity: 0.6; }
+
+/* --- 跨兩欄卡片樣式 (2x1) --- */
+.detail-box.col-span-2 {
+    grid-column: span 2;
+    aspect-ratio: auto; /* 取消正方形比例 */
+    min-height: 160px;  /* 設定固定高度，約等於單格的高度 */
+}
+
+/* --- 風向專屬樣式 --- */
+.wind-layout {
+    display: flex;
+    justify-content: space-between; /* 文字靠左，圖示靠右 */
+    align-items: center;
+    height: 100%;
+}
+.wind-info { display: flex; flex-direction: column; justify-content: center; }
+
+.compass {
+    width: 90px;
+    height: 90px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.15);
+    margin-right: 15px;
+}
+.arrow {
+    font-size: 2.5rem;
+    transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1); /* 平滑旋轉 */
+}
+.direction-label {
+    position: absolute;
+    top: 5px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    opacity: 0.6;
+}
+
+/* --- 月相專屬樣式 --- */
+.moon-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+.moon-text { display: flex; flex-direction: column; justify-content: center; }
+
+.moon-icon {
+    font-size: 4.5rem;
+    margin-right: 10px;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+}
+
+/* =========================================
+   8. 頁尾 (Footer)
+   ========================================= */
+.attribution {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-top: 10px;
+    font-weight: 500;
+}
+.attribution a {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+}
