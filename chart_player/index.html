@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPE Chart Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <img id="bgLayer" src="" alt="">
+
+    <div id="ui-container">
+        <div class="controls">
+            <div class="file-group">
+                <label>1. 上傳譜面 (JSON): <input type="file" id="chartInput" accept=".json"></label>
+                <label>2. 上傳音樂 (Audio): <input type="file" id="audioInput" accept="audio/*"></label>
+                <label>3. 上傳背景 (Image): <input type="file" id="bgInput" accept="image/*"></label>
+                <hr style="border: 0; border-top: 1px solid #555; width: 100%; margin: 5px 0;">
+                <label>4. 音效 - Tap (一般): <input type="file" id="seTapInput" accept="audio/*"></label>
+                <label>5. 音效 - Drag (黃鍵): <input type="file" id="seDragInput" accept="audio/*"></label>
+                <label>6. 音效 - Flick (紅鍵): <input type="file" id="seFlickInput" accept="audio/*"></label>
+            </div>
+            
+            <div class="volume-group">
+                <label>音樂音量: <input type="range" id="musicVolume" min="0" max="100" value="100"></label>
+                <label>音效音量: <input type="range" id="seVolume" min="0" max="100" value="100"></label>
+            </div>
+
+            <div class="options-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="fixedModeCheck"> 固定判定線模式
+                </label>
+                
+                <div class="input-label-row">
+                    <span>按鍵大小:</span>
+                    <input type="range" id="noteSizeSlider" min="50" max="200" value="100" style="width: 80px;">
+                    <span id="noteSizeVal" style="width: 40px; text-align: right;">100%</span>
+                </div>
+                <div class="input-label-row">
+                    <span>介面大小:</span>
+                    <input type="range" id="uiScaleSlider" min="50" max="150" value="100" style="width: 80px;">
+                    <span id="uiScaleVal" style="width: 40px; text-align: right;">100%</span>
+                </div>
+
+                <div class="input-label-row">
+                    <span>Combo 文字:</span>
+                    <input type="text" id="comboTextInput" value="COMBO" class="text-input">
+                </div>
+                <div class="input-label-row">
+                    <span>歌曲名稱:</span>
+                    <input type="text" id="songNameInput" value="Untitled" class="text-input">
+                </div>
+                <div class="input-label-row">
+                    <span>難度標示:</span>
+                    <input type="text" id="difficultyInput" value="IN Lv.15" class="text-input">
+                </div>
+            </div>
+
+            <div class="playback-controls">
+                <button id="btnPlay" disabled>播放 / 暫停 (Space)</button>
+                <button id="btnStop" disabled>停止</button>
+            </div>
+            
+            <button id="btnFullScreen" style="width: 100%; margin-top: 5px; background: #444;">進入全螢幕 (隱藏選單)</button>
+
+            <div class="status-bar">
+                <span id="timeDisplay">00:00 / 00:00</span>
+                <div class="status" id="statusMsg">請依序上傳檔案...</div>
+            </div>
+        </div>
+    </div>
+    
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
