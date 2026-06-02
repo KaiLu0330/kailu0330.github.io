@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信封</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #e2d4c0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI';
+            padding: 1.5rem;
+        }
+        .env {
+            width: 100%;
+            max-width: 400px;
+            background: #fffef7;
+            border: 1px solid #cdb48b;
+            cursor: pointer;
+        }
+        .env-inner {
+            padding: 28px 24px 30px 24px;
+        }
+        .flap {
+            background: #fbe9cf;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2c7a0;
+            margin-bottom: 24px;
+        }
+        .flap h3 {
+            font-size: 1.6rem;
+            color: #7b3f00;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .flap p {
+            font-size: 0.8rem;
+            color: #b97f44;
+            margin-top: 6px;
+        }
+        .ltr {
+            background: #fffef5;
+            padding: 22px 20px;
+            border: 1px solid #f0dbb8;
+            margin-bottom: 16px;
+        }
+        .ltr p {
+            font-size: 1rem;
+            line-height: 1.65;
+            color: #3a2a1f;
+            text-align: justify;
+        }
+        .ltr .greeting {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-left: 5px solid #f7b05e;
+            padding-left: 14px;
+            color: #aa6f3c;
+        }
+        .ltr .signature {
+            margin-top: 20px;
+            text-align: right;
+            border-top: 1px dashed #edd0aa;
+            padding-top: 12px;
+            color: #bd8a5a;
+        }
+        .address {
+            margin-top: 12px;
+            border-top: 1px dashed #eddbb8;
+            padding-top: 14px;
+        }
+        .to-name {
+            background: #f9e5cd;
+            padding: 4px 12px;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+        .ribbon {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 5px;
+            background: linear-gradient(90deg, #e2bc7c, #ffdd99, #e2bc7c);
+        }
+        .env.opened .flap {
+            display: none;
+        }
+        .env.opened .ltr {
+            display: block;
+            animation: fadeUp 0.3s ease-out;
+        }
+        .env:not(.opened) .ltr {
+            display: none;
+        }
+        .env:not(.opened) .flap {
+            display: block;
+        }
+        .env::after {
+            content: "✉️";
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            font-size: 1.3rem;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .env {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div class="env" id="env">
+    <div class="env-inner">
+        <div class="flap">
+            <h3>畢業快樂</h3>
+            <p>點擊即可打開</p>
+        </div>
+        <div class="ltr">
+            <div class="greeting"> To 銘義老師：</div>
+            <p>
+                從七年級至今已經接近三年了，我也在資優班三年了，時間過得真的很快，從剛開始的陌生到現在的熟悉，您一直在支持著我們，無論是平常的問題、七年級的專題研究、八年級的發明展，還是九年級的科學班，您都讓我們收穫了很多。您的教學讓我學會了如何思考和解決問題。謝謝老師這三年來的付出，我會永遠記得這一段時光。
+            </p>
+            <div class="signature">
+                —— By 90812某個學生
+            </div>
+        </div>
+        <div class="address">
+            <div class="to-name">To: 銘義老師</div>
+        </div>
+    </div>
+    <div class="ribbon"></div>
+</div>
+<script>
+    document.getElementById('env').onclick = function(e) {
+        this.classList.toggle('opened');
+        e.stopPropagation();
+    };
+</script>
+</body>
+</html>
